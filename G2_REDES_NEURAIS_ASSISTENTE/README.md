@@ -1,4 +1,4 @@
-# Assistente de academia virtual com implementação de redes neurais
+# PersonalIA: Assistente de academia virtual com implementação de redes neurais
 
 # 📌: Sobre o Projeto
 

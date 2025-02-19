@@ -1,1 +1,0 @@
-# Implementa-o---de---redes---neurais

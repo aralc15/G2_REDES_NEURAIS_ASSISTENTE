@@ -1,1 +1,97 @@
-teste
+import cv2
+import mediapipe as mp
+import numpy as np
+import time
+import csv
+
+# Inicializa o MediaPipe Pose
+mp_pose = mp.solutions.pose
+pose = mp_pose.Pose()
+mp_draw = mp.solutions.drawing_utils
+
+# Função para calcular o ângulo entre três pontos
+def calcular_angulo(p1, p2, p3):
+    angulo = np.degrees(np.arctan2(p3[1] - p2[1], p3[0] - p2[0]) - np.arctan2(p1[1] - p2[1], p1[0] - p2[0]))
+    return abs(angulo) if angulo >= 0 else abs(angulo + 360)
+
+# Pergunta ao usuário o modo desejado
+modo = input("Escolha o modo: (1) Contar Agachamentos | (2) Corrigir Postura do Agachamento: ")
+
+# Abre a webcam e cria o arquivo CSV
+cap = cv2.VideoCapture(0)
+contador_agachamento = 0
+agachado = False
+
+# Cria o arquivo CSV com cabeçalho
+with open('squat_dataset.csv', 'w', newline='') as file:
+    writer = csv.writer(file)
+    writer.writerow([
+        'timestamp', 'ankle_x', 'ankle_y', 'knee_x', 'knee_y',
+        'hip_x', 'hip_y', 'knee_angle', 'squat_count', 'mode',
+        'posture_status', 'is_squatting'
+    ])
+
+while cap.isOpened():
+    ret, frame = cap.read()
+    if not ret:
+        break
+
+    # Converte a imagem para RGB
+    img_rgb = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+    result = pose.process(img_rgb)
+
+    if result.pose_landmarks:
+        mp_draw.draw_landmarks(frame, result.pose_landmarks, mp_pose.POSE_CONNECTIONS)
+
+        # Obtém os landmarks
+        joelho_esq = result.pose_landmarks.landmark[mp_pose.PoseLandmark.LEFT_KNEE]
+        quadril_esq = result.pose_landmarks.landmark[mp_pose.PoseLandmark.LEFT_HIP]
+        tornozelo_esq = result.pose_landmarks.landmark[mp_pose.PoseLandmark.LEFT_ANKLE]
+
+        # Converte para coordenadas pixeladas
+        altura, largura, _ = frame.shape
+        p1 = (int(tornozelo_esq.x * largura), int(tornozelo_esq.y * altura))
+        p2 = (int(joelho_esq.x * largura), int(joelho_esq.y * altura))
+        p3 = (int(quadril_esq.x * largura), int(quadril_esq.y * altura))
+
+        # Calcula o ângulo
+        angulo_agachamento = calcular_angulo(p1, p2, p3)
+
+        # Lógica de contagem/postura
+        if modo == "1":
+            if angulo_agachamento < 90 and not agachado:
+                contador_agachamento += 1
+                agachado = True
+            if angulo_agachamento > 120:
+                agachado = False
+            cv2.putText(frame, f"Agachamentos: {contador_agachamento}", (50, 50), 
+                        cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 2)
+        elif modo == "2":
+            texto = "Agachamento certo" if angulo_agachamento < 90 else "Agachamento incompleto"
+            cor = (0, 255, 0) if angulo_agachamento < 90 else (0, 0, 255)
+            cv2.putText(frame, texto, (50, 50), cv2.FONT_HERSHEY_SIMPLEX, 1, cor, 2)
+
+        # Coleta dados para o dataset
+        posture_status = "correct" if angulo_agachamento < 90 else "incomplete"
+        with open('squat_dataset.csv', 'a', newline='') as file:
+            writer = csv.writer(file)
+            writer.writerow([
+                int(time.time() * 1000),
+                tornozelo_esq.x, tornozelo_esq.y,
+                joelho_esq.x, joelho_esq.y,
+                quadril_esq.x, quadril_esq.y,
+                angulo_agachamento,
+                contador_agachamento,
+                modo,
+                posture_status if modo == "2" else "",
+                agachado
+            ])
+
+    # Exibe o vídeo
+    cv2.imshow("Correção Postural", frame)
+
+    if cv2.waitKey(10) & 0xFF == ord('q'):
+        break
+
+cap.release()
+cv2.destroyAllWindows()

@@ -1,0 +1,37 @@
+import time
+import csv
+# Cria o arquivo CSV e escreve o cabeçalho
+with open('squat_dataset.csv', 'w', newline='') as file:
+    writer = csv.writer(file)
+    writer.writerow([
+        'timestamp', 'ankle_x', 'ankle_y', 'knee_x', 'knee_y',
+        'hip_x', 'hip_y', 'knee_angle', 'squat_count', 'mode',
+        'posture_status', 'is_squatting'
+    ])
+# Coleta dados normalizados (0-1) dos landmarks
+ankle_x = tornozelo_esq.x
+ankle_y = tornozelo_esq.y
+knee_x = joelho_esq.x
+knee_y = joelho_esq.y
+hip_x = quadril_esq.x
+hip_y = quadril_esq.y
+
+# Determina o status/postura
+posture_status = ""
+if modo == "2":
+    posture_status = "correct" if angulo_agachamento < 90 else "incomplete"
+
+# Salva os dados no CSV
+with open('squat_dataset.csv', 'a', newline='') as file:
+    writer = csv.writer(file)
+    writer.writerow([
+        int(time.time() * 1000),  # timestamp em ms
+        ankle_x, ankle_y,
+        knee_x, knee_y,
+        hip_x, hip_y,
+        angulo_agachamento,
+        contador_agachamento,
+        modo,
+        posture_status,
+        agachado
+    ])

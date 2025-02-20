@@ -9,10 +9,10 @@ Este projeto utiliza as bibliotecas OpenCV, NumPy e MediaPipe para processamento
 * Antes de executar o código, certifique-se de que as bibliotecas estão instaladas no seu ambiente Python. Para isso, utilize os seguintes comandos no terminal ou prompt de comando: pip install opencv-python numpy mediapipe
 
 *Se estiver utilizando um ambiente virtual, ative-o antes da instalação com:
-- No Windows (cmd ou PowerShell)
+- No Windows (cmd ou PowerShell):
 venv\Scripts\activate  
 
-- No macOS/Linux
+- No macOS/Linux:
 source venv/bin/activate
 
 Caso precise de versões específicas das bibliotecas para compatibilidade com o sistema operacional ou dependências do projeto, utilize:
@@ -20,9 +20,9 @@ Caso precise de versões específicas das bibliotecas para compatibilidade com o
 Para verificar as versões disponíveis, consulte a documentação oficial de cada biblioteca.
 
 
-# 📖: Conteúdo do Trabalho
+# 📖: Importação no Código
 
-O projeto abrange os seguintes tópicos:
+- Após a instalação, as bibliotecas podem ser importadas diretamente no seu script Python:
 
 - `VISÃO GERAL DO DOCUMENTO`
 - `DESCRIÇÃO GERAL DO SISTEMA`
@@ -31,14 +31,34 @@ O projeto abrange os seguintes tópicos:
 - `CONCLUSÃO`
 - `REFERÊNCIAS`
 
-# 🛠: Tecnologias Utilizadas
+# 🛠: Solução de Problemas
+
+Caso ocorra algum erro ao importar as bibliotecas, siga estas recomendações:
+
+Verifique a instalação:
+- `Execute pip list para conferir se as bibliotecas estão instaladas.
+Se não estiverem listadas, reinstale com pip install --upgrade opencv-python numpy mediapipe.
+Confirme o ambiente Python`
+
+Certifique-se de estar executando o código no mesmo ambiente onde as bibliotecas foram instaladas.
+Verifique a compatibilidade do OpenCV
+
+- `pip install opencv-contrib-python
+Isso adiciona funcionalidades extras ao OpenCV, que podem ser exigidas em determinados projetos.`
+
+
+Em alguns sistemas, pode ser necessário instalar pacotes adicionais, como:
+- `pip install opencv-contrib-python
+Isso adiciona funcionalidades extras ao OpenCV, que podem ser exigidas em determinados projetos.
+Consulte a documentação oficial`
+
+Se os problemas persistirem, considere reinstalar o Python e configurar um novo ambiente virtual para evitar conflitos entre versões de bibliotecas.
 
 Linguagem: Python
 
-# 🗂️: Informações complementares e agradecimentos
+# 🗂️: Consulte a documentação oficial
 
-* Para dúvidas ou sugestões, entre em contato com um dos membros da equipe!
+OpenCV : https://opencv.org
+NumPy : https://numpy.org
 
-- `@ Data última versão: [19 de fevereiro de 2025]`
-- `@ Versão: 1.0`
-- `@ Agradecimentos: Universidade Federal do Maranhão (UFMA), Professor Doutor Thales Levi Azevedo Valente, e colegas de curso.`
+Se os problemas persistirem, considere reinstalar o Python e configurar um novo ambiente virtual para evitar conflitos entre versões de bibliotecas.
